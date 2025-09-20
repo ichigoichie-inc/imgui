@@ -1693,6 +1693,20 @@ void ImGuiIO::AddInputCharactersUTF8(const char* utf8_chars)
     }
 }
 
+void ImGuiIO::AddInputCharactersUTF8(ImStrv str)
+{
+    if (!AppAcceptingEvents)
+        return;
+
+    const char* utf8_chars = str.Begin;
+    while (utf8_chars <= str.End)
+    {
+        unsigned int c = 0;
+        utf8_chars += ImTextCharFromUtf8(&c, utf8_chars, NULL);
+        AddInputCharacter(c);
+    }
+}
+
 // Clear all incoming events.
 void ImGuiIO::ClearEventsQueue()
 {
