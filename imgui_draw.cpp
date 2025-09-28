@@ -39,6 +39,10 @@ Index of this file:
 #include "misc/freetype/imgui_freetype.h"
 #endif
 
+#ifdef IMGUI_ENABLE_AB_GLYPH
+extern "C" ImFontLoader* get_ab_loader();
+#endif
+
 #include <stdio.h>      // vsnprintf, sscanf, printf
 #include <stdint.h>     // intptr_t
 
@@ -4189,7 +4193,9 @@ void ImFontAtlasBuildInit(ImFontAtlas* atlas)
     //   and point to it instead of pointing directly to return value of the GetFontLoaderXXX functions.
     if (atlas->FontLoader == NULL)
     {
-#ifdef IMGUI_ENABLE_FREETYPE
+#ifdef IMGUI_ENABLE_AB_GLYPH
+        atlas->SetFontLoader(get_ab_loader());
+#elif IMGUI_ENABLE_FREETYPE
         atlas->SetFontLoader(ImGuiFreeType::GetFontLoader());
 #elif defined(IMGUI_ENABLE_STB_TRUETYPE)
         atlas->SetFontLoader(ImFontAtlasGetFontLoaderForStbTruetype());

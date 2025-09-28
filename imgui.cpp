@@ -21700,6 +21700,10 @@ static const char* FormatTextureRefForDebugDisplay(char* buf, int buf_size, ImTe
 namespace ImGuiFreeType { IMGUI_API const ImFontLoader* GetFontLoader(); IMGUI_API bool DebugEditFontLoaderFlags(unsigned int* p_font_builder_flags); }
 #endif
 
+#ifdef IMGUI_ENABLE_AB_GLYPH
+extern "C" ImFontLoader* get_ab_loader();
+#endif
+
 // [DEBUG] List fonts in a font atlas and display its texture
 void ImGui::ShowFontAtlas(ImFontAtlas* atlas)
 {
@@ -21779,6 +21783,19 @@ void ImGui::ShowFontAtlas(ImFontAtlas* atlas)
         SetItemTooltip("Requires #define IMGUI_ENABLE_FREETYPE + imgui_freetype.cpp.");
         EndDisabled();
 #endif
+
+        SameLine();
+#ifdef IMGUI_ENABLE_AB_GLYPH
+        const ImFontLoader* loader_ab = get_ab_loader();
+        if (RadioButton("ab_glyph", loader_current == loader_ab))
+            atlas->SetFontLoader(loader_ab);
+#else
+        BeginDisabled();
+        RadioButton("ab_glyph", false);
+        SetItemTooltip("Requires #define IMGUI_ENABLE_AB_GLYPH + the font-ab Cargo feature");
+        EndDisabled();
+#endif
+
         EndDisabled();
         TreePop();
     }
